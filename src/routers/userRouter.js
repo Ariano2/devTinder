@@ -72,14 +72,12 @@ userRouter.get('/feed', userAuth, async (req, res) => {
       $or: [{ fromUserId: logInUserId }, { toUserId: logInUserId }],
     });
 
-    // find connectionRequests where fromUserId or toUserId matches logInUserId
-
     const hideUsersFromFeed = new Set();
     connectionRequests.map((con) => {
       hideUsersFromFeed.add(con.toUserId.toString());
       hideUsersFromFeed.add(con.fromUserId.toString());
     });
-    hideUsersFromFeed.add(logInUserId);
+    hideUsersFromFeed.add(logInUserId.toString());
     const userFeed = await User.find({
       _id: { $nin: Array.from(hideUsersFromFeed) },
     })

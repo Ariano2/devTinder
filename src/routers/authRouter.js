@@ -41,9 +41,9 @@ authRouter.post('/login', async (req, res) => {
         throw new Error('Invalid Credentials');
       }
       const token = await user.generateJWT();
-      // 1 day = 864000000 ms
+      // cookies expire in 7 days (1day = 86400000 ms)
       res.cookie('token', token, { maxAge: 86400000 * 7 });
-      res.send('Logged In Successfully');
+      res.send({ message: 'Logged In Successfully', data: user });
     } else {
       throw new Error('Invalid Credentials');
     }
