@@ -22,7 +22,10 @@ authRouter.post('/signup', async (req, res) => {
       emailId,
     });
     await user.save();
-    res.send('User Created Successfully');
+    const token = await user.generateJWT();
+    // cookies expire in 7 days (1day = 86400000 ms)
+    res.cookie('token', token, { maxAge: 86400000 * 7 });
+    res.json({ message: 'User Created Successfully', data: user });
   } catch (err) {
     res.status(400).send('Error User could not be Signed Up: ' + err.message);
   }
