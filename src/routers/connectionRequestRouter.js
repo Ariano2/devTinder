@@ -4,7 +4,7 @@ const { userAuth } = require('../middlewares/auth');
 const { ConnectionRequest } = require('../models/connectionRequest');
 const { User } = require('../models/user');
 const { connection } = require('mongoose');
-
+const sendEmail = require('../utils/sesSendEmail');
 requestRouter.post(
   '/request/send/:status/:userId',
   userAuth,
@@ -29,6 +29,20 @@ requestRouter.post(
         status,
       });
       await connectionRequest.save();
+      // now here we will send an EMAIL
+      const subject = 'Pending Friend Request!';
+      const emailBody =
+        toUser.firstName +
+        ' you received Friend Request from ' +
+        loggedInUser.firstName +
+        '. Login at dev2inder to accept/reject the request. Please do not respond to this email.';
+
+      await sendEmail.run(
+        'arianothrowaway@gmail.com',
+        'team@dev2inder.store',
+        subject,
+        emailBody
+      );
       res.json({
         message: 'Connection Request Sent successfully',
         connectionRequest,
