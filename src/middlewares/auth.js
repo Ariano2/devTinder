@@ -8,7 +8,7 @@ const userAuth = async (req, res, next) => {
       return res.status(401).send('Token is Invalid');
     }
     // extract decoded secret from the token
-    const { _id } = await jwt.verify(token, 'DEV@Tinder007');
+    const { _id } = await jwt.verify(token, process.env.JWT_SECRET_TOKEN);
     // verify/check if user exists
     const user = await User.findById(_id);
     if (!user) {

@@ -1,6 +1,5 @@
 const { SendEmailCommand } = require('@aws-sdk/client-ses');
 const { sesClient } = require('./sesClient');
-require('dotenv').config();
 const createSendEmailCommand = (toAddress, fromAddress, subject, emailBody) => {
   return new SendEmailCommand({
     Destination: {
