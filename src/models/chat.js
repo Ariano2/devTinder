@@ -5,6 +5,8 @@ const messageSchema = new mongoose.Schema(
     text: {
       type: String,
       required: true,
+      maxLength: 280,
+      trim: true,
     },
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -21,7 +23,7 @@ const chatSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  messages: { type: [messageSchema], required: true, default: {} },
+  messages: { type: [messageSchema], required: true, default: [] },
 });
 
 const Chat = mongoose.model('Chat', chatSchema);

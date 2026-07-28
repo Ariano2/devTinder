@@ -1,11 +1,13 @@
 const validator = require('validator');
 const validateSignUp = (data) => {
-  updateAllowedFields = ['firstName', 'lastName', 'email', 'password'];
-  isUpdateAllowed = true;
-  isUpdateAllowed = Object.keys(data).every((key) =>
-    updateAllowedFields.includes(key)
+  const allowedFields = ['firstName', 'lastName', 'emailId', 'password', 'username'];
+  const isUpdateAllowed = Object.keys(data).every((key) =>
+    allowedFields.includes(key)
   );
-  const { firstName, lastName, email, password } = data;
+  if (!isUpdateAllowed) {
+    throw new Error('Invalid Signup Fields');
+  }
+  const { firstName, lastName, emailId, password, username } = data;
   if (firstName)
     if (
       firstName.length < 3 ||
@@ -23,28 +25,26 @@ const validateSignUp = (data) => {
   if (password)
     if (
       password.length < 3 ||
-      password.length > 72 ||
+      password.length > 20 ||
       !validator.isAscii(password)
     )
       throw new Error('Password is Invalid');
-  if (email)
-    if (email.length > 60 || !validator.isEmail(email))
+  if (emailId)
+    if (emailId.length > 60 || !validator.isEmail(emailId))
       throw new Error('Email is Invalid');
+  if (username)
+    if (
+      username.length < 3 ||
+      username.length > 30 ||
+      !/^[a-zA-Z0-9_]+$/.test(username)
+    )
+      throw new Error('Username is Invalid');
   return true;
 };
 const validateProfileUpdate = (data) => {
-  updateAllowedFields = [
-    'firstName',
-    'lastName',
-    'age',
-    'gender',
-    'photoUrl',
-    'about',
-    'skills',
-  ];
-  isUpdateAllowed = true;
-  isUpdateAllowed = Object.keys(data).every((field) =>
-    updateAllowedFields.includes(field)
+  const allowedFields = ['firstName', 'lastName', 'photoUrl', 'about', 'skills'];
+  const isUpdateAllowed = Object.keys(data).every((field) =>
+    allowedFields.includes(field)
   );
   if (isUpdateAllowed === false) {
     return false;
@@ -58,17 +58,6 @@ const validateProfileUpdate = (data) => {
       if (data?.lastName.length < 3 || data?.lastName.length > 50)
         throw new Error('Last Name is Invalid');
     }
-    if (data?.age) {
-      if (
-        !validator.isNumeric(data?.age + '') ||
-        data?.age < 18 ||
-        data?.age > 150
-      )
-        throw new Error('Age is Invalid');
-    }
-    if (data?.gender)
-      if (!['male', 'female', 'other'].includes(data?.gender))
-        throw new Error('Gender is Invalid');
     if (data?.photoUrl) {
       if (!validator.isURL(data?.photoUrl, { validate_length: true }))
         throw new Error('Photo URL is Invalid');

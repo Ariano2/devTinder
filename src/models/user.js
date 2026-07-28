@@ -11,15 +11,27 @@ const userSchema = new mongoose.Schema({
     trim: true,
   },
   lastName: { type: 'String', maxLength: 50, minLength: 3, trim: true },
+  username: {
+    type: 'String',
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+    minLength: 3,
+    maxLength: 30,
+    validate(val) {
+      if (!/^[a-zA-Z0-9_]+$/.test(val)) {
+        throw new Error('Username is Invalid');
+      }
+    },
+  },
   password: {
     type: 'String',
     required: true,
-    maxLength: 72,
+    maxLength: 20,
     minLength: 3,
-    required: true,
     trim: true,
   },
-  age: { type: 'Number', min: 18, max: 150 },
   emailId: {
     type: 'String',
     lowercase: true,
@@ -27,15 +39,6 @@ const userSchema = new mongoose.Schema({
     maxLength: 60,
     trim: true,
     unique: true,
-  },
-  gender: {
-    type: 'String',
-    lowercase: true,
-    validate(val) {
-      if (!['male', 'female', 'other'].includes(val)) {
-        throw new Error('Gender is Invalid');
-      }
-    },
   },
   photoUrl: {
     type: 'String',
@@ -55,7 +58,7 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.generateJWT = async function () {
-  const token = await jwt.sign({ _id: this.id }, 'DEV@Tinder007', {
+  const token = await jwt.sign({ _id: this.id }, process.env.JWT_SECRET_TOKEN, {
     expiresIn: '7d',
   });
   return token;

@@ -1,31 +1,28 @@
 {
-  "name": "devtinder",
+  "name": "socialhub",
   "version": "1.0.0",
-  "description": "tinder for developers",
+  "description": "a social platform with posts, comments and @mentions",
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js"
   },
   "keywords": [
-    "tinder",
-    "development",
-    "make",
-    "friends"
+    "social",
+    "posts",
+    "feed"
   ],
   "author": "Aryan Gosain",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.731.1",
     "bcrypt": "^5.1.1",
+    "cookie": "^0.7.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.0",
-    "node-cron": "^3.0.3",
     "socket.io": "^4.8.1",
     "validator": "^13.12.0"
   }

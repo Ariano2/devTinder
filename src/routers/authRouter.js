@@ -4,6 +4,7 @@ const { validateSignUp } = require('../utils/apiValidator');
 const bcrypt = require('bcrypt');
 const { User } = require('../models/user');
 const validator = require('validator');
+const { toFriendlyMessage } = require('../utils/errorMessages');
 
 authRouter.post('/signup', async (req, res) => {
   try {
@@ -12,7 +13,7 @@ authRouter.post('/signup', async (req, res) => {
     if (!validateSignUp(data)) {
       throw new Error('Signup Failed');
     }
-    const { firstName, lastName, password, emailId } = data;
+    const { firstName, lastName, password, emailId, username } = data;
     // password hashing
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
@@ -20,6 +21,7 @@ authRouter.post('/signup', async (req, res) => {
       lastName,
       password: hashedPassword,
       emailId,
+      username,
     });
     await user.save();
     const token = await user.generateJWT();
@@ -27,7 +29,7 @@ authRouter.post('/signup', async (req, res) => {
     res.cookie('token', token, { maxAge: 86400000 * 7 });
     res.json({ message: 'User Created Successfully', data: user });
   } catch (err) {
-    res.status(400).send('Error User could not be Signed Up: ' + err.message);
+    res.status(400).send(toFriendlyMessage(err));
   }
 });
 
@@ -51,7 +53,7 @@ authRouter.post('/login', async (req, res) => {
       throw new Error('Invalid Credentials');
     }
   } catch (err) {
-    res.status(400).send('Login Error : ' + err.message);
+    res.status(400).send(toFriendlyMessage(err));
   }
 });
 
