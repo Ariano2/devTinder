@@ -2,7 +2,7 @@ const express = require('express');
 const { userAuth } = require('../middlewares/auth');
 const profileRouter = express.Router();
 const { validateProfileUpdate } = require('../utils/apiValidator');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 profileRouter.get('/profile/view', userAuth, async (req, res) => {
   const user = req.user;
