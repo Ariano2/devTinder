@@ -6,6 +6,8 @@ const { User } = require('../models/user');
 const validator = require('validator');
 const { toFriendlyMessage } = require('../utils/errorMessages');
 
+const cookieOptions = { secure: true, sameSite: 'none' };
+
 authRouter.post('/signup', async (req, res) => {
   try {
     const data = req.body;
@@ -26,7 +28,7 @@ authRouter.post('/signup', async (req, res) => {
     await user.save();
     const token = await user.generateJWT();
     // cookies expire in 7 days (1day = 86400000 ms)
-    res.cookie('token', token, { maxAge: 86400000 * 7 });
+    res.cookie('token', token, { ...cookieOptions, maxAge: 86400000 * 7 });
     res.json({ message: 'User Created Successfully', data: user });
   } catch (err) {
     res.status(400).send(toFriendlyMessage(err));
@@ -47,7 +49,7 @@ authRouter.post('/login', async (req, res) => {
       }
       const token = await user.generateJWT();
       // cookies expire in 7 days (1day = 86400000 ms)
-      res.cookie('token', token, { maxAge: 86400000 * 7 });
+      res.cookie('token', token, { ...cookieOptions, maxAge: 86400000 * 7 });
       res.send({ message: 'Logged In Successfully', data: user });
     } else {
       throw new Error('Invalid Credentials');
@@ -58,7 +60,7 @@ authRouter.post('/login', async (req, res) => {
 });
 
 authRouter.post('/logout', async (req, res) => {
-  res.cookie('token', null, { expires: new Date(Date.now()) });
+  res.cookie('token', null, { ...cookieOptions, expires: new Date(Date.now()) });
   res.send('Logged Out Successfully');
 });
 
